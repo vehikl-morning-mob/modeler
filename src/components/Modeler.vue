@@ -1,35 +1,33 @@
 <template>
-    <div class="modeler">
-        <div class="modeler-container">
-            <controls :controls="controls">
+  <div class="modeler">
+    <div class="modeler-container">
+      <controls :controls="controls" />
 
-            </controls>
-            <div ref="paper-container" class="paper-container">
-                <drop @drop="handleDrop">
-                    <div class="paper">
-                    </div>
-                </drop>
-            </div>
+      <div ref="paper-container" class="paper-container">
+        <drop @drop="handleDrop">
+          <div ref="paper" />
+        </drop>
+      </div>
 
-            <div class="inspector">
-                <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
-            </div>
+      <div class="inspector">
+        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
+      </div>
 
-        </div>
-        <div class="definitions-container" v-if="definitions">
-            <component
-              v-for="(node, id) in nodes"
-              :is="node.type"
-              :key="id"
-              :graph="graph"
-              :paper="paper"
-              :node="node"
-              :id="id"
-              :highlighted="highlighted && highlighted.model.component === node.component"
-              @add-node="addNode"
-            />
-        </div>
     </div>
+    <div class="definitions-container" v-if="definitions">
+      <component
+        v-for="(node, id) in nodes"
+        :is="node.type"
+        :key="id"
+        :graph="graph"
+        :paper="paper"
+        :node="node"
+        :id="id"
+        :highlighted="highlighted && highlighted.model.component === node.component"
+        @add-node="addNode"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -62,12 +60,9 @@ import {
 import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
 
 import processMakerModdle from "@processmaker/processmaker-bpmn-moddle/resources/processmaker";
+import joint from "jointjs";
 
-let version = "1.0";
-
-if (!window.joint) {
-  window.joint = require("jointjs");
-}
+const version = "1.0";
 
 export default {
   props: [
@@ -90,14 +85,11 @@ export default {
       extensions: [
 
       ],
-      // Our jointjs data graph model
       graph: null,
-      // Our jointjs paper
       paper: null,
       definitions: null,
       planeElements: null,
       canvasDragPosition: null,
-      // This is our id based lookup model
       inspectors: {
         process: processInspectorConfig
       },
@@ -112,7 +104,8 @@ export default {
           items: []
         }
       ],
-      nodes: {}
+      nodes: {},
+      selectionRectangle: null,
     };
   },
   watch: {
@@ -281,6 +274,48 @@ export default {
       this.inspectorConfig = config;
       this.inspectorHandler = handler ? handler : (() => {});
     },
+    addSelectionHandlers() {
+      this.paper.on('blank:pointerdown', this.addSelectionRectangle);
+      this.paper.on('blank:pointermove', this.drawSelection);
+      this.paper.on('cell:pointerup link:pointerup element:pointerup blank:pointerup', this.completeSelection);
+    },
+    addSelectionRectangle(event, x, y)  {
+      this.paper.setInteractivity(false);
+      this.selectionRectangle = new joint.shapes.standard.Rectangle({
+        body: { fill: '#ccc', opacity: 0.5 },
+      });
+      this.selectionRectangle.addTo(this.graph);
+      this.selectionRectangle.position(x, y);
+      // this.$el.addEventListener('mousemove', this.drawSelection);
+    },
+    // drawSelection({ clientX, clientY }) {
+    drawSelection(event, x, y) {
+      // const { x, y } = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
+      const { x: rectangleX, y: rectangleY } = this.selectionRectangle.get('position');
+      if (!rectangleX || !rectangleY) {
+        return;
+      }
+
+      const width = rectangleX - x;
+      const height = rectangleY - y;
+      const direction = `${height < 0 ? 'bottom' : 'top'}-${width < 0 ? 'right' : 'left'}`
+
+      console.log(Math.abs(width), Math.abs(height), direction);
+
+      // console.log(x, y, this.selectionRectangle.get('position').x, this.selectionRectangle.get('position').y);
+      this.selectionRectangle.resize(Math.abs(width), Math.abs(height), { direction });
+      // this.selectionRectangle.resize(x, y);
+    },
+    completeSelection() {
+      this.$el.removeEventListener('mousemove', this.drawSelection);
+      // const selectedElements = this.graph.findModelsUnderElement(this.selectionRectangle);
+      this.selectionRectangle.remove();
+      // console.log(selectedElements);
+      this.paper.setInteractivity(this.graph.get('interactiveFunc'));
+    },
+    // preventGridPan() {
+    //   this.paper.translate(0, 0);
+    // }
   },
   mounted() {
     // Register our bpmn moddle extension
@@ -300,8 +335,7 @@ export default {
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
 
-    let el = this.$el.getElementsByClassName("paper").item(0);
-    this.graph = new window.joint.dia.Graph();
+    this.graph = new joint.dia.Graph();
     this.graph.set('interactiveFunc', cellView => {
       if (cellView.model.get('onClick')) {
         return false;
@@ -309,8 +343,8 @@ export default {
 
       return { labelMove: false };
     });
-    this.paper = new window.joint.dia.Paper({
-      el: el,
+    this.paper = new joint.dia.Paper({
+      el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
       width: this.$refs['paper-container'].clientWidth,
@@ -318,6 +352,9 @@ export default {
       drawGrid: true,
       interactive: this.graph.get('interactiveFunc'),
     });
+
+    this.addSelectionHandlers();
+
     this.paper.on("blank:pointerclick", () => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
@@ -327,18 +364,18 @@ export default {
       this.inspectorConfig = processInspectorConfig;
     });
 
-    this.paper.on("blank:pointerdown", (event, x, y) => {
-      this.canvasDragPosition = {x: x, y: y};
-    });
-    this.paper.on('cell:pointerup blank:pointerup', (cellView, x, y) => {
-      this.canvasDragPosition = null;
-    });
+    // this.paper.on("blank:pointerdown", (event, x, y) => {
+    //   this.canvasDragPosition = {x: x, y: y};
+    // });
+    // this.paper.on('cell:pointerup blank:pointerup', (cellView, x, y) => {
+    //   this.canvasDragPosition = null;
+    // });
 
-    this.$el.addEventListener('mousemove', (event) => {
-      if(this.canvasDragPosition) {
-        this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
-      }
-    })
+    // this.$el.addEventListener('mousemove', (event) => {
+    //   if(this.canvasDragPosition) {
+    //     this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
+    //   }
+    // })
 
     this.paper.on("cell:pointerclick", (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
