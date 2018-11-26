@@ -44,7 +44,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       for (var key in value) {
         // Only change if the value is different
         if (definition[key] != value[key]) {
-          definition[key] = value[key];
+          definition[key] = key === "config" ? JSON.stringify(value[key]) : value[key];
         }
       }
       component.updateShape();
@@ -73,7 +73,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
             config: {
               label: 'Tweet Body',
               helper: 'The Body Of The Tweet to Send',
-              name: 'tweet',
+              name: 'JSON.parse(config).tweet',
             },
           },
         ],

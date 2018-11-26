@@ -10,7 +10,7 @@
       </div>
 
       <div class="inspector">
-        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
+        <vue-form-renderer ref="inspector" :data="inspectorNode" @update="inspectorHandler" :config="inspectorConfig" />
       </div>
     </div>
 
