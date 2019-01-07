@@ -8,6 +8,10 @@ export const saveDebounce = 300;
 
 export default new Vuex.Store({
   state: {
+    planeElements: [],
+    // selectedConfig: null,
+    highlightedElement: null,
+
     graph: null,
     useTemp: false,
     highlightedNode: null,
@@ -19,6 +23,10 @@ export default new Vuex.Store({
     batchActions: [],
   },
   getters: {
+    planeElements: state => state.planeElements,
+    // selectedConfig: state => state.selectedConfig,
+    highlightedElement: state => state.highlightedElement,
+
     nodes: state => state.nodes,
     canUndo: state => state.undoList.length > 0,
     canRedo: state => state.redoList.length > 0,
@@ -28,6 +36,19 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setPlaneElements(state, planeElements) {
+      state.planeElements = planeElements;
+    },
+    addElement(state, element) {
+      state.planeElements.push(element);
+    },
+    // setSelectedConfig(state, config) {
+    //   state.selectedConfig = config;
+    // },
+    setHighlightedElement(state, element) {
+      state.highlightedElement = element;
+    },
+
     undo(state) {
       if (state.undoList.length > 0) {
         state.highlightedNode = null;
@@ -62,6 +83,9 @@ export default new Vuex.Store({
     },
     updateNodeProp(state, { node, key, value }) {
       node.definition.set(key, value);
+    },
+    updateElementProp(state, { element, key, value }) {
+      element.bpmnElement.set(key, value);
     },
     clearNodes(state) {
       state.undoList = [];
@@ -172,6 +196,18 @@ export default new Vuex.Store({
       const previousValue = node.definition.get(key);
       const undo = () => commit('updateNodeProp', { node, key, value: previousValue });
       const redo = () => commit('updateNodeProp', { node, key, value });
+      redo();
+
+      state.batch
+        ? state.batchActions.push({ undo, redo })
+        : state.undoList.push({ undo, redo });
+
+      commit('clearRedoList');
+    },
+    updateElementProp({ commit, state }, { element, key, value }) {
+      const previousValue = element.bpmnElement.get(key);
+      const undo = () => commit('updateElementProp', { element, key, value: previousValue });
+      const redo = () => commit('updateElementProp', { element, key, value });
       redo();
 
       state.batch

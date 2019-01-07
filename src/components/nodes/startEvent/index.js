@@ -1,8 +1,14 @@
-import component from './startEvent.vue';
+// import component from './startEvent.vue';
+import joint from 'jointjs';
 
 export default {
   id: 'processmaker-modeler-start-event',
-  component,
+  shape: joint.shapes.standard.Circle,
+  attrs: {
+    body: { stroke: '#00bf9c', fill: '#EDFFFC' },
+    label: { refY: '130%' },
+  },
+  // component,
   bpmnType: 'bpmn:StartEvent',
   control: true,
   category: 'BPMN',

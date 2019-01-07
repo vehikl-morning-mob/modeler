@@ -1,11 +1,12 @@
 <template>
   <div class="inspector-container">
-    <vue-form-renderer
-      v-if="highlightedNode"
+    <portal-target name="inspector-panel" />
+    <!-- <vue-form-renderer
+      v-if="config"
       :data="data"
       @update="updateDefinition"
       :config="config"
-    />
+    /> -->
   </div>
 </template>
 
@@ -49,30 +50,34 @@ export default {
       return store.getters.highlightedNode;
     },
     config() {
-      if (!this.highlightedNode) {
-        return {
-          name: 'Empty',
-          items: [],
-        };
-      }
+      return store.getters.selectedConfig
+        ? store.getters.selectedConfig.inspectorConfig
+        : { name: 'Empty', items: [] };
 
-      const { type, definition } = this.highlightedNode;
+      // if (!this.highlightedNode) {
+      //   return {
+      //     name: 'Empty',
+      //     items: [],
+      //   };
+      // }
 
-      if (this.highlightedNode === this.processNode) {
-        return processInspectorConfig;
-      }
+      // const { type, definition } = this.highlightedNode;
 
-      if (
-        type === sequenceFlowId &&
-        ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
-      ) {
-        return sequenceExpressionInspectorConfig;
-      }
+      // if (this.highlightedNode === this.processNode) {
+      //   return processInspectorConfig;
+      // }
 
-      return this.nodeRegistry[type].inspectorConfig;
+      // if (
+      //   type === sequenceFlowId &&
+      //   ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
+      // ) {
+      //   return sequenceExpressionInspectorConfig;
+      // }
+
+      // return this.nodeRegistry[type].inspectorConfig;
     },
     updateDefinition() {
-      if (!this.highlightedNode) {
+      if (!this.config) {
         return noop;
       }
 
@@ -85,11 +90,11 @@ export default {
         : value => this.defaultInspectorHandler(value, this.highlightedNode, this.setNodeProp);
     },
     data() {
-      if (!this.highlightedNode) {
+      if (!this.config) {
         return {};
       }
 
-      const type = this.highlightedNode && this.highlightedNode.type;
+      // const type = this.highlightedNode && this.highlightedNode.type;
 
       return type && this.nodeRegistry[type].inspectorData
         ? this.nodeRegistry[type].inspectorData(this.highlightedNode)

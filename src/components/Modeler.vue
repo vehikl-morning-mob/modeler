@@ -9,8 +9,16 @@
           <button @click="redo" :disabled="!canRedo">Redo</button>
         </div>
 
-        <drop @drop="handleDrop" @dragover="validateDropTarget">
-          <div ref="paper"/>
+        <drop @drop="handleDrop" @dragover="validateDropTarget" class="drop">
+          <Paper>
+            <BpmnElement
+              v-for="element in planeElements"
+              :element="element"
+              :nodeRegistry="nodeRegistry"
+              :parsers="parsers"
+              :key="element.id"
+            />
+          </Paper>
         </drop>
       </div>
 
@@ -21,7 +29,7 @@
       />
     </div>
 
-    <component
+    <!-- <component
       v-for="node in nodes"
       :is="node.type"
       :key="node.definition.id"
@@ -43,7 +51,7 @@
       @click="highlightNode(node)"
       @unsetPools="unsetPools"
       @setPools="setPools"
-    />
+    /> -->
   </div>
 </template>
 
@@ -55,15 +63,20 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
-import { startEvent } from '@/components/nodes';
+import { startEvent as startEventConfig } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import { Paper } from '@/components/jointjs-vue';
+import BpmnElement from '@/components/BpmnElement';
+import PortalVue from 'portal-vue';
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane/';
+
+Vue.use(PortalVue);
 
 const version = '1.0';
 
@@ -72,6 +85,8 @@ export default {
     Drop,
     controls,
     InspectorPanel,
+    Paper,
+    BpmnElement,
   },
   data() {
     return {
@@ -95,7 +110,7 @@ export default {
 
       definitions: null,
       context: null,
-      planeElements: null,
+      // planeElements: null,
       canvasDragPosition: null,
       processNode: null,
       collaboration: null,
@@ -108,6 +123,9 @@ export default {
     };
   },
   computed: {
+    planeElements: () => {
+      return store.getters.planeElements;
+    },
     nodes: () => store.getters.nodes,
     canUndo: () => store.getters.canUndo,
     canRedo: () => store.getters.canRedo,
@@ -183,35 +201,37 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNode(nodeType, parser) {
-      const defaultParser = () => nodeType.id;
+    registerNode(config, parser) {
+      const defaultParser = () => config.id;
 
-      this.nodeRegistry[nodeType.id] = nodeType;
+      this.nodeRegistry[config.id] = config;
 
-      Vue.component(nodeType.id, nodeType.component);
+      Vue.component(config.id, config.component);
 
-      if (nodeType.control) {
+      if (config.control) {
         // Register the control for our control palette
-        if (!this.controls[nodeType.category]) {
-          this.$set(this.controls, nodeType.category, []);
+        if (!this.controls[config.category]) {
+          this.$set(this.controls, config.category, []);
         }
 
-        this.controls[nodeType.category].push({
-          type: nodeType.id,
-          icon: nodeType.icon,
-          label: nodeType.label,
+        this.controls[config.category].push({
+          type: config.id,
+          icon: config.icon,
+          label: config.label,
         });
       }
 
-      this.parsers[nodeType.bpmnType]
-        ? this.parsers[nodeType.bpmnType].push(parser || defaultParser)
-        : this.parsers[nodeType.bpmnType] = [parser || defaultParser];
+      this.parsers[config.bpmnType]
+        ? this.parsers[config.bpmnType].push(parser || defaultParser)
+        : this.parsers[config.bpmnType] = [parser || defaultParser];
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
+      return;
       // Get the top level objects
       // All root elements are either bpmn:process or bpmn:collaboration types
       // There should only be one collaboration
+
 
       this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
       this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
@@ -251,6 +271,7 @@ export default {
       store.commit('highlightNode', this.processNode);
     },
     setNode(definition) {
+      return;
       const type = this.parsers[definition.$type].reduce((type, parser) => {
         return parser(definition) || type;
       }, null);
@@ -281,10 +302,11 @@ export default {
           // Update definitions export to our own information
           definitions.exporter = 'ProcessMaker Modeler';
           definitions.exporterVersion = version;
-          this.definitions = definitions;
-          this.context = context;
+          // this.definitions = definitions;
+          // this.context = context;
           this.initializeUniqueId(context);
-          this.parse();
+          // this.parse();
+          store.commit('setPlaneElements', definitions.diagrams[0].plane.get('planeElement'));
           this.$emit('parsed');
         }
       });
@@ -426,6 +448,28 @@ export default {
       }
     },
     addStartEvent() {
+      if (this.planeElements.length > 0) {
+        return;
+      }
+
+      const id = uniqueId('node_');
+      const startEvent = startEventConfig.diagram(this.moddle);
+      startEvent.set('id', `${id}_di`);
+      // startEvent.set('bpmnElement', startEventConfig.definition(this.moddle));
+      Reflect.defineProperty(startEvent, 'bpmnElement', {
+        value: startEventConfig.definition(this.moddle),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
+      // startEvent.set('bpmnElement', startEventConfig.definition(this.moddle));
+      startEvent.bpmnElement.set('id', id);
+      startEvent.bounds.x = 150;
+      startEvent.bounds.y = 150;
+
+      store.commit('addElement', startEvent);
+
+      return;
       /* Add an initial startEvent node if the graph is empty */
       if (this.nodes.length > 0) {
         return;
@@ -484,21 +528,21 @@ export default {
       store.commit('highlightNode', this.processNode);
     });
 
-    this.paper.on('blank:pointerdown', (event, x, y) => {
-      this.canvasDragPosition = { x, y };
-    });
-    this.paper.on('cell:pointerup blank:pointerup', () => {
-      this.canvasDragPosition = null;
-    });
+    // this.paper.on('blank:pointerdown', (event, x, y) => {
+    //   this.canvasDragPosition = { x, y };
+    // });
+    // this.paper.on('cell:pointerup blank:pointerup', () => {
+    //   this.canvasDragPosition = null;
+    // });
 
-    this.$el.addEventListener('mousemove', event => {
-      if (this.canvasDragPosition) {
-        this.paper.translate(
-          event.offsetX - this.canvasDragPosition.x,
-          event.offsetY - this.canvasDragPosition.y
-        );
-      }
-    });
+    // this.$el.addEventListener('mousemove', event => {
+    //   if (this.canvasDragPosition) {
+    //     this.paper.translate(
+    //       event.offsetX - this.canvasDragPosition.x,
+    //       event.offsetY - this.canvasDragPosition.y
+    //     );
+    //   }
+    // });
 
     this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
@@ -550,6 +594,11 @@ export default {
 @import '~jointjs/dist/joint.css';
 
 $cursors: default, not-allowed;
+
+.drop {
+  width: 100%;
+  height: 100%;
+}
 
 .modeler {
   position: relative;
