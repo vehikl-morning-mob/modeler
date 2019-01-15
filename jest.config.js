@@ -10,6 +10,11 @@ module.exports = {
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest',
   },
+  setupFiles: [
+    '<rootDir>/src/setup/initialLoad.js',
+    '<rootDir>/src/setup/defaultNodes.js',
+    '<rootDir>/src/setup/globals.js',
+  ],
   transformIgnorePatterns: [
     '<rootDir>/node_modules/(?!(bpmn-moddle|moddle))',
   ],

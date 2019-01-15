@@ -1,9 +1,14 @@
 import { mount } from '@vue/test-utils';
 import Modeler from '@/components/Modeler';
+import Vue from 'vue';
 
 describe('Modeler.vue', () => {
-  it('Modeler Renders', () => {
-    const wrapper = mount(Modeler);
-    expect(wrapper.exists()).toBe(true);
+  it('Modeler Renders', (done) => {
+    const wrapper = mount(Modeler, {sync: false});
+    Vue.nextTick(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    });
+    // expect(wrapper).toBeDefined();
   });
 });
