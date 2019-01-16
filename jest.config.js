@@ -16,8 +16,6 @@ module.exports = {
   },
   // setupFiles: [
   //   '<rootDir>/src/setup/initialLoad.js',
-  //   '<rootDir>/src/setup/defaultNodes.js',
-  //   '<rootDir>/src/setup/globals.js',
   // ],
   transformIgnorePatterns: [
     '<rootDir>/node_modules/(?!(bpmn-moddle|moddle))',
