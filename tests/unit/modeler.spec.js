@@ -1,14 +1,22 @@
-import { mount } from '@vue/test-utils';
-import Modeler from '@/components/Modeler';
-import Vue from 'vue';
+const timeout = 5000;
 
-describe('Modeler.vue', () => {
-  it('Modeler Renders', (done) => {
-    const wrapper = mount(Modeler, {sync: false});
-    Vue.nextTick(() => {
-      expect(wrapper.exists()).toBe(true);
-      done();
+describe(
+  'Modeler',
+  () => {
+    let page;
+    beforeAll(async() => {
+      page = await global.__BROWSER__.newPage();
+      await page.goto('http://localhost:8080/');
+    }, timeout);
+
+    afterAll(async() => {
+      await page.close();
     });
-    // expect(wrapper).toBeDefined();
-  });
-});
+
+    it('Modeler Application Renders', async() => {
+      let text = await page.evaluate(() => document.body.textContent);
+      expect(text).toContain('ProcessMaker Modeler');
+    });
+  },
+  timeout
+);
