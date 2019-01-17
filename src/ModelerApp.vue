@@ -4,7 +4,7 @@
       <div>ProcessMaker Modeler</div>
       <div class="actions">
         <b-btn v-b-modal="'uploadmodal'">Upload XML</b-btn>
-        <button class="button download-xml" @click="download">Download XML</button>
+        <button class="downloadXml button" @click="download">Download XML</button>
       </div>
     </div>
     <div class="modeler-container">
@@ -54,7 +54,23 @@ export default {
         } else {
           let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
-          console.log(xml);
+
+          if (window.tacos) {
+            console.log('Hello');
+            window.tacos().then((tacos) => {
+              // alert(`we called window.tacos ${tacos}`);
+            });
+            // alert('Tacos is here!!!');
+          } else {
+            // alert('No more tacos :(');
+          }
+
+          // let newDiv = document.createElement('div');
+          // newDiv.appendChild(document.createTextNode(xml));
+          // document.body.appendChild(newDiv);
+          // alert(xml);
+
+          // console.log(xml);
         }
       });
     },

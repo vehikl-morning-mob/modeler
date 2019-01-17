@@ -10,33 +10,59 @@ describe('Modeler', () => {
 
   afterAll(async() => {
     await page.close();
-  });
+  }, timeout);
 
-  it('Modeler Application Renders', async() => {
+  xit('Modeler Application Renders', async() => {
     let text = await page.evaluate(() => document.body.textContent);
     expect(text).toContain('ProcessMaker Modeler');
   });
 
-  it('Drag a node to the paper', async() => {
+  xit('Drags and drops node to graph', async() => {
     const element = await page.$('.tool');
     const { x, y, height, width } = await element.boundingBox();
-
     const paperContainer = await page.$('.paper-container');
     const paperContainerBox = await paperContainer.boundingBox();
-
-    const downloadXMLSelector = await page.$$('.download-xml');
-
     const html = await page.content();
 
     await page.mouse.move(x + width / 2, y + height / 2);
     await page.mouse.down();
-    await page.mouse.move(x + 1000, y + 1000);
+    await page.mouse.move(x + 750, y + 400);
     await page.mouse.up();
 
-    await page.click(downloadXMLSelector);
-
-    console.log(html);
   });
-},
-timeout
-);
+
+  it('exported process xml is a valid xml', async() => {
+
+    const tacos = await page.exposeFunction('tacos', () => {
+      return 'TACOS!!!!';
+    });
+
+    const html = await page.content();
+    const validXml = `<?xml version="1.0" encoding="UTF-8"?>
+                      <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+                        <bpmn:process id="Process_1" isExecutable="true">
+                          <bpmn:startEvent id="node_10" name="Start Event" />
+                        </bpmn:process>
+                        <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+                          <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+                            <bpmndi:BPMNShape id="node_10_di" bpmnElement="node_10">
+                              <dc:Bounds x="150" y="150" width="36" height="36" />
+                            </bpmndi:BPMNShape>
+                          </bpmndi:BPMNPlane>
+                        </bpmndi:BPMNDiagram>
+                      </bpmn:definitions>`;
+
+    await page.waitForSelector('.downloadXml');
+
+    await page._client.send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: './tempDownloads'});
+    await page.click('.downloadXml');
+    await page.waitFor(10000);
+
+    // await expect(page).toClick('.downloadXml');
+    // console.log(tacos);
+    // await expect(tacos).toEqual('TACOS!!!!');
+    // await expect(page).toMatch(validXml);
+
+
+  });
+},timeout);

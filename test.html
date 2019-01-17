@@ -1,0 +1,466 @@
+<div id="modeler-app">
+    <div class="navbar">
+        <div>ProcessMaker Modeler</div>
+        <div class="actions"><button
+                type="button"
+                class="btn btn-secondary"
+            >Upload XML</button><button class="downloadXml button">Download XML</button></div>
+    </div>
+    <div class="modeler-container">
+        <div class="modeler">
+            <div class="modeler-container">
+                <div
+                    data-v-83587074=""
+                    class="controls"
+                ><input
+                        data-v-83587074=""
+                        placeholder="Filter..."
+                        type="text"
+                        class="form-control form-control-sm"
+                    >
+                    <div data-v-83587074="">
+                        <h2 data-v-83587074="">BPMN</h2>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/start-event.e895cee2.svg"
+                                    ></div>
+                                <div data-v-83587074="">Start Event</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/end-event.1ad31396.svg"
+                                    ></div>
+                                <div data-v-83587074="">End Event</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/task.e7419065.svg"
+                                    ></div>
+                                <div data-v-83587074="">Task</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/scriptTask.da7e394e.svg"
+                                    ></div>
+                                <div data-v-83587074="">Script Task</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/exclusive-gateway.f7ea5340.svg"
+                                    ></div>
+                                <div data-v-83587074="">Exclusive Gateway</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/text-annotation.926416f4.svg"
+                                    ></div>
+                                <div data-v-83587074="">Text Annotation</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                        <div
+                            data-v-83587074=""
+                            draggable="true"
+                        >
+                            <div
+                                data-v-83587074=""
+                                class="tool"
+                            >
+                                <div
+                                    data-v-83587074=""
+                                    class="img-container"
+                                ><img
+                                        data-v-83587074=""
+                                        src="/img/pool.ac62ddae.svg"
+                                    ></div>
+                                <div data-v-83587074="">Pool</div>
+                            </div>
+                            <div style="position: fixed; top: -1000px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="paper-container"
+                    style="width: 800px; height: 536px;"
+                >
+                    <div class="history-buttons"><button>Undo</button><button disabled="disabled">Redo</button></div>
+                    <div>
+                        <div
+                            class="joint-paper joint-theme-default"
+                            style="width: 440px; height: 536px;"
+                        >
+                            <div class="joint-paper-background"></div>
+                            <div
+                                class="joint-paper-grid"
+                                style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJ2LTciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzIGlkPSJ2LTYiPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuXzAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3QgaWQ9InYtOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI0FBQUFBQSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgaWQ9InYtMTAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybl8wKSIvPjwvc3ZnPg==&quot;);"
+                            ></div><svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                version="1.1"
+                                id="v-2"
+                                width="100%"
+                                height="100%"
+                            >
+                                <defs id="v-4"></defs>
+                                <g
+                                    id="v-3"
+                                    class="joint-viewport"
+                                >
+                                    <g
+                                        model-id="67b5febe-d89c-4552-9a07-2865c9f5b216"
+                                        id="j_1"
+                                        class="joint-cell joint-type-standard joint-type-standard-circle joint-element joint-theme-default"
+                                        data-type="standard.Circle"
+                                        transform="translate(150,150)"
+                                    >
+                                        <circle
+                                            joint-selector="body"
+                                            id="v-11"
+                                            stroke-width="2"
+                                            stroke="#00bf9c"
+                                            fill="#EDFFFC"
+                                            cx="18"
+                                            cy="18"
+                                            r="18"
+                                        ></circle><text
+                                            joint-selector="label"
+                                            id="v-12"
+                                            font-size="14"
+                                            xml:space="preserve"
+                                            text-anchor="middle"
+                                            fill="#333333"
+                                            transform="matrix(1,0,0,1,18,46.8)"
+                                        >
+                                            <tspan
+                                                dy="0.3em"
+                                                class="v-line"
+                                            >Start&nbsp;Event</tspan>
+                                        </text>
+                                    </g>
+                                    <g
+                                        model-id="e53de605-25e3-466a-9f41-e716f1aab0e3"
+                                        id="j_2"
+                                        class="joint-cell joint-type-standard joint-type-standard-embeddedimage joint-element joint-theme-default"
+                                        data-type="standard.EmbeddedImage"
+                                        display="none"
+                                        transform="translate(213.453125,147.5015640258789)"
+                                    >
+                                        <rect
+                                            joint-selector="body"
+                                            id="v-13"
+                                            stroke=" #fff"
+                                            fill="#fff"
+                                            stroke-width="2"
+                                            opacity="0.8"
+                                            cursor="pointer"
+                                            width="25"
+                                            height="25"
+                                        ></rect>
+                                        <image
+                                            joint-selector="image"
+                                            id="v-14"
+                                            x="10"
+                                            y="10"
+                                            preserveAspectRatio="xMidYMin"
+                                            xlink:href="/img/connect-elements.f14598da.svg"
+                                            cursor="pointer"
+                                            width="25"
+                                            height="25"
+                                            transform="matrix(1,0,0,1,-10,-10)"
+                                        ></image><text
+                                            joint-selector="label"
+                                            id="v-15"
+                                            text-vertical-anchor="top"
+                                            text-anchor="left"
+                                            font-size="14"
+                                            fill="#333333"
+                                            transform="matrix(1,0,0,1,27.5,10)"
+                                        ></text>
+                                    </g>
+                                    <g
+                                        model-id="8ee00a17-e624-4fa7-acea-301b2ef3a38b"
+                                        id="j_3"
+                                        class="joint-cell joint-type-standard joint-type-standard-embeddedimage joint-element joint-theme-default"
+                                        data-type="standard.EmbeddedImage"
+                                        display="none"
+                                        transform="translate(213.453125,182.5015640258789)"
+                                    >
+                                        <rect
+                                            joint-selector="body"
+                                            id="v-16"
+                                            stroke=" #fff"
+                                            fill="#fff"
+                                            stroke-width="2"
+                                            opacity="0.8"
+                                            cursor="pointer"
+                                            width="25"
+                                            height="25"
+                                        ></rect>
+                                        <image
+                                            joint-selector="image"
+                                            id="v-17"
+                                            x="10"
+                                            y="10"
+                                            preserveAspectRatio="xMidYMin"
+                                            xlink:href="/img/trash-alt-solid.026efa48.svg"
+                                            cursor="pointer"
+                                            width="25"
+                                            height="25"
+                                            transform="matrix(1,0,0,1,-10,-10)"
+                                        ></image><text
+                                            joint-selector="label"
+                                            id="v-18"
+                                            text-vertical-anchor="top"
+                                            text-anchor="left"
+                                            font-size="14"
+                                            fill="#333333"
+                                            transform="matrix(1,0,0,1,27.5,10)"
+                                        ></text>
+                                    </g>
+                                </g>
+                                <g
+                                    id="v-5"
+                                    class="joint-tools-container"
+                                ></g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="inspector-container">
+                    <div data-v-5a3d3662="">
+                        <div data-v-5a3d3662="">
+                            <div data-v-5a3d3662="">
+                                <div
+                                    data-v-18add810=""
+                                    data-v-5a3d3662=""
+                                    class="form-group"
+                                    validationdata="[object Object]"
+                                >
+                                    <div
+                                        data-v-18add810=""
+                                        style="font-size: 2em;"
+                                    >Process</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-5a3d3662="">
+                            <div data-v-5a3d3662="">
+                                <div
+                                    data-v-6b08f92e=""
+                                    data-v-5a3d3662=""
+                                    class="form-group"
+                                ><label
+                                        data-v-6b08f92e=""
+                                        for="id-qh8t8o4f"
+                                    >Identifier</label><input
+                                        data-v-6b08f92e=""
+                                        type="text"
+                                        name="id"
+                                        class="form-control"
+                                        id="id-qh8t8o4f"
+                                    >
+                                    <!---->
+                                    <!----><small
+                                        data-v-6b08f92e=""
+                                        class="form-text text-muted"
+                                    >The id field should be unique across all elements in the diagram</small></div>
+                            </div>
+                        </div>
+                        <div data-v-5a3d3662="">
+                            <div data-v-5a3d3662="">
+                                <div
+                                    data-v-6b08f92e=""
+                                    data-v-5a3d3662=""
+                                    class="form-group"
+                                ><label
+                                        data-v-6b08f92e=""
+                                        for="name-rhza5424"
+                                    >Name</label><input
+                                        data-v-6b08f92e=""
+                                        placeholder=""
+                                        type="text"
+                                        name="name"
+                                        class="form-control"
+                                        id="name-rhza5424"
+                                    >
+                                    <!---->
+                                    <!----><small
+                                        data-v-6b08f92e=""
+                                        class="form-text text-muted"
+                                    >The Name of the Process</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                processes="[object Object]"
+                noderegistry="[object Object]"
+            ></div>
+        </div>
+    </div>
+    <div
+        data-v-892a82fe=""
+        class="statusbar"
+    >
+        <div data-v-892a82fe=""></div>
+        <div data-v-892a82fe="">
+            No errors detected
+            <svg
+                data-v-892a82fe=""
+                aria-hidden="true"
+                data-prefix="fas"
+                data-icon="check-circle"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="svg-inline--fa fa-check-circle fa-w-16"
+                style="color: green;"
+            >
+                <path
+                    data-v-892a82fe=""
+                    fill="currentColor"
+                    d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 2568s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"
+                    class=""
+                ></path>
+            </svg></div>
+    </div>
+    <div>
+        <div id="uploadmodal___BV_modal_outer_">
+            <div
+                id="uploadmodal"
+                role="dialog"
+                aria-hidden="true"
+                class="modal fade"
+                style="display: none;"
+            >
+                <div class="modal-dialog modal-md">
+                    <div
+                        tabindex="-1"
+                        role="document"
+                        aria-labelledby="uploadmodal___BV_modal_header_"
+                        aria-describedby="uploadmodal___BV_modal_body_"
+                        class="modal-content"
+                    >
+                        <header
+                            id="uploadmodal___BV_modal_header_"
+                            class="modal-header"
+                        >
+                            <h5 class="modal-title">Upload BPMN File</h5><button
+                                type="button"
+                                aria-label="Close"
+                                class="close"
+                            >×</button>
+                        </header>
+                        <div
+                            id="uploadmodal___BV_modal_body_"
+                            class="modal-body"
+                        ><span class="file-uploads file-uploads-html5">
+                                Upload file
+                                <label for="file"></label> <input
+                                    type="file"
+                                    name="file"
+                                    id="file"
+                                ></span></div>
+                        <footer
+                            id="uploadmodal___BV_modal_footer_"
+                            class="modal-footer"
+                        ><button
+                                type="button"
+                                class="btn btn-secondary"
+                            >Cancel</button><button
+                                type="button"
+                                class="btn btn-primary"
+                            >OK</button></footer>
+                    </div>
+                </div>
+            </div>
+            <!---->
+        </div>
+    </div>
+</div>
+<!-- built files will be auto injected -->
+<script
+    type="text/javascript"
+    src="/app.js"
+></script>
+
+</body>
+
+</html>
