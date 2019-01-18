@@ -54,23 +54,6 @@ export default {
         } else {
           let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
-
-          if (window.tacos) {
-            console.log('Hello');
-            window.tacos().then((tacos) => {
-              // alert(`we called window.tacos ${tacos}`);
-            });
-            // alert('Tacos is here!!!');
-          } else {
-            // alert('No more tacos :(');
-          }
-
-          // let newDiv = document.createElement('div');
-          // newDiv.appendChild(document.createTextNode(xml));
-          // document.body.appendChild(newDiv);
-          // alert(xml);
-
-          // console.log(xml);
         }
       });
     },
