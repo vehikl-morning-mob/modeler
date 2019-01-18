@@ -15,7 +15,11 @@ module.exports = {
     quotes: ['error', 'single'],
     'no-debugger': 'off',
     'object-shorthand': 'error',
-    'space-before-function-paren': ['error', 'never'],
+    'space-before-function-paren': ['error', {
+      asyncArrow: 'always',
+      anonymous: 'never',
+      named: 'never',
+    }],
     'keyword-spacing': 'error'
   },
   parserOptions: {
