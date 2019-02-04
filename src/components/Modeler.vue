@@ -312,35 +312,39 @@ export default {
 
       store.commit('highlightNode', this.processNode);
     },
+    getDiagramElementFromNode(definition) {
+      return this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+    },
+    whenNoDefinition(definition, flowElements, artifacts, diagram) {
+      if (process.env.NODE_ENV !== 'production') {
+        /* eslint-disable-next-line no-console */
+        console.warn(`Unsupported element type in parse: ${definition.$type}`);
+      }
+
+      pull(flowElements, [
+        definition,
+        ...definition.get('incoming'),
+        ...definition.get('outgoing'),
+      ]);
+      pull(artifacts, definition);
+      pull(this.planeElements, diagram);
+    },
     setNode(definition, flowElements, artifacts) {
       /* Get the diagram element for the corresponding flow element node. */
-      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+      const diagram = this.getDiagramElementFromNode(definition);
+      const parsers = this.parsers[definition.$type];
 
-      if (!this.parsers[definition.$type]) {
-        if (process.env.NODE_ENV !== 'production') {
-          /* eslint-disable-next-line no-console */
-          console.warn(`Unsupported element type in parse: ${definition.$type}`);
-        }
-
-        pull(flowElements, [
-          definition,
-          ...definition.get('incoming'),
-          ...definition.get('outgoing'),
-        ]);
-        pull(artifacts, definition);
-        pull(this.planeElements, diagram);
-
+      if (!parsers) {
+        this.whenNoDefinition(definition, flowElements, artifacts, diagram);
         return;
       }
 
-      const type = this.parsers[definition.$type]
+      const type = parsers
         .reduce((type, parser) => {
           return parser(definition, this.moddle) || type;
         }, null);
 
-      const unnamedElements = ['bpmn:TextAnnotation'];
-      const requireName = unnamedElements.indexOf(definition.$type) === -1;
-      if (requireName && !definition.get('name')) {
+      if (this.nameIsRequiredAndNotPresent(definition)) {
         definition.set('name', '');
       }
 
@@ -350,6 +354,15 @@ export default {
         diagram,
       });
     },
+
+    nameIsRequiredAndNotPresent(definition) {
+      return  this.requiresName(definition) && !definition.get('name')
+    },
+
+    requiresName(definition) {
+      return 'bpmn:TextAnnotation' !== definition.$type;
+    },
+
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
       const hasTarget = definition.targetRef && this.parsers[definition.targetRef.$type];
