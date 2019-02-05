@@ -71,6 +71,8 @@ import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
 
+import  Node  from './node';
+
 const version = '1.0';
 
 export default {
@@ -315,7 +317,7 @@ export default {
     getDiagramElementFromNode(definition) {
       return this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
     },
-    whenNoDefinition(definition, flowElements, artifacts, diagram) {
+    whenNoMatchingParser(definition, flowElements, artifacts, diagram) {
       if (process.env.NODE_ENV !== 'production') {
         /* eslint-disable-next-line no-console */
         console.warn(`Unsupported element type in parse: ${definition.$type}`);
@@ -329,34 +331,35 @@ export default {
       pull(artifacts, definition);
       pull(this.planeElements, diagram);
     },
+    getMatchingNodeIdForDefinition(definition, parsers) {
+      return parsers
+        .reduce((type, parser) => {
+          return parser(definition, this.moddle) || type;
+        }, null);
+    },
     setNode(definition, flowElements, artifacts) {
+
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.getDiagramElementFromNode(definition);
       const parsers = this.parsers[definition.$type];
 
       if (!parsers) {
-        this.whenNoDefinition(definition, flowElements, artifacts, diagram);
+        this.whenNoMatchingParser(definition, flowElements, artifacts, diagram);
         return;
       }
 
-      const type = parsers
-        .reduce((type, parser) => {
-          return parser(definition, this.moddle) || type;
-        }, null);
+      const type = this.getMatchingNodeIdForDefinition(definition, parsers);
 
       if (this.nameIsRequiredAndNotPresent(definition)) {
         definition.set('name', '');
       }
 
-      store.commit('addNode', {
-        type,
-        definition,
-        diagram,
-      });
+      // Create node and store it in an array of nodes
+      store.commit('addNode', new Node(type, definition,diagram));
     },
 
     nameIsRequiredAndNotPresent(definition) {
-      return  this.requiresName(definition) && !definition.get('name')
+      return  this.requiresName(definition) && !definition.get('name');
     },
 
     requiresName(definition) {
