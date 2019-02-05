@@ -331,14 +331,7 @@ export default {
       pull(artifacts, definition);
       pull(this.planeElements, diagram);
     },
-    getMatchingNodeIdForDefinition(definition, parsers) {
-      return parsers
-        .reduce((type, parser) => {
-          return parser(definition, this.moddle) || type;
-        }, null);
-    },
     setNode(definition, flowElements, artifacts) {
-
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.getDiagramElementFromNode(definition);
       const parsers = this.parsers[definition.$type];
@@ -348,14 +341,12 @@ export default {
         return;
       }
 
-      const type = this.getMatchingNodeIdForDefinition(definition, parsers);
-
       if (this.nameIsRequiredAndNotPresent(definition)) {
         definition.set('name', '');
       }
 
       // Create node and store it in an array of nodes
-      store.commit('addNode', new Node(type, definition,diagram));
+      store.commit('addNode', new Node(definition, diagram, parsers));
     },
 
     nameIsRequiredAndNotPresent(definition) {
