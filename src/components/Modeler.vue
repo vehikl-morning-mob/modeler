@@ -343,7 +343,7 @@ export default {
       }
 
       // Create node and store it in an array of nodes
-      store.commit('addNode', new Node(definition, diagram, parsers));
+      store.commit('addNode', new Node(definition, diagram, parsers, this.moddle));
     },
 
     hasSourceAndTarget(definition) {

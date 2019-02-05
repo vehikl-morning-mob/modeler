@@ -1,8 +1,9 @@
 class Node {
-  constructor(definition, diagram, parsers) {
+  constructor(definition, diagram, parsers, moddle) {
     this.type = this.getMatchingNodeIdForDefinition(definition, parsers);
     this.definition = definition;
     this.diagram = diagram;
+    this.moddle = moddle;
 
     if (this.nameIsRequiredAndNotPresent()) {
       this.definition.set('name', '');
