@@ -334,6 +334,7 @@ export default {
     setNode(definition, flowElements, artifacts) {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.getDiagramElementFromNode(definition);
+      // definition.$type is something like bpmn:startEvent
       const parsers = this.parsers[definition.$type];
 
       if (!parsers) {
@@ -341,20 +342,8 @@ export default {
         return;
       }
 
-      if (this.nameIsRequiredAndNotPresent(definition)) {
-        definition.set('name', '');
-      }
-
       // Create node and store it in an array of nodes
       store.commit('addNode', new Node(definition, diagram, parsers));
-    },
-
-    nameIsRequiredAndNotPresent(definition) {
-      return  this.requiresName(definition) && !definition.get('name');
-    },
-
-    requiresName(definition) {
-      return 'bpmn:TextAnnotation' !== definition.$type;
     },
 
     hasSourceAndTarget(definition) {
