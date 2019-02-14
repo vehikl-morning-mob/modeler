@@ -227,9 +227,9 @@ describe('Modeler', () => {
     );
 
     cy.get(textAnnotation).click();
-    cy.get(associationButton).click();
+    cy.get(associationButton).click({force: true});
     connectNode(associationButton, 400, 300);
-    cy.get(associationNode).click();
+    cy.get(associationNode).click({force: true});
 
     cy.get(directionSelectSelector).select('none');
     cy.get(directionSelectSelector).should('have.value', testDirection.none);
