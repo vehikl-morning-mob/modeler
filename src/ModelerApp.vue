@@ -58,8 +58,8 @@ export default {
         if (err) {
           alert(err);
         } else {
-          let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
-          FilerSaver.saveAs(file);
+          // let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
+          // FilerSaver.saveAs(file);
 
           /* Save XML string to window–this is used in testing to compare against known valid XML */
           window.xml = xml;
